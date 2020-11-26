@@ -1,3 +1,3 @@
-
+APPLICATIONS
 
 In here can be found a list of other application that apply to QCA or can be usefull or are somehow related to same objective, quality control of data series.

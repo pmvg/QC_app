@@ -29,5 +29,5 @@ Remember that this file is important to identify variables and units respectivel
 
 This tab like Data Set have more than one blocks of download depending of number of files choosed in Data Set tab.
 In here is possible to upload metadata for station in same format that exists in first lines of SEF file.
-For that propose there is in directory "docs" a pre file with name Meta_template.tsv, opened by any text editor and is recomended to use it if not SEF file.
+For that propose there is in directory "metafiles" a pre file with name "meta_template.tsv", opened by any text editor and is recomended to use it if not SEF file.
 
