@@ -1,0 +1,12 @@
+RESULTS
+
+
+In this tab will be presented tests results. 
+Will have a list of links for each test, where is put in more simple way all values calculated and results of test.
+
+In form of table all values calculated by app and in info boxes some usefull informations about how many values didn't pass that test.
+
+In case of test fail or suspect will be add to proper column in data, meta column, and in one of links with name Meta will be placed information about tests,
+i.e what will be placed, if it will, for each value when suspect or fail any of tests.
+
+

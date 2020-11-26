@@ -1,0 +1,91 @@
+OPTIONS
+
+In this place can be define or change aspects that influenciate application and data uploaded.
+
+
+1.	Options
+
+Statistics 
+
+Default is Not Available.
+If a file exists and will be upload to application turn this this option "Available" auto activates mean or sum test (MS) in Quality Control tab.
+
+Stat Used
+
+This indicates witch stats (mean or sum) used to compare. Default is Mean.
+
+1.1.	Thresholds
+
+Mean or Sum
+
+Limit value to considere MS test failed. It's more or less this value.
+
+Oscillation
+
+Limit value from where can be considerer suspect or wrong, comparing with value before and after.
+
+1.2	Gross Error Limits (GEL) and Temporal Consistency (TC)
+
+Tables with limit values for this tests.
+Values can be temporarily change (for session) by double click in any cell of table. For more permanent change
+should be change values inside respectives files on "docs" directory.
+
+1.2.1	Default Values:
+
+For GEL
+[45S - 45N]
+Season	w	ta	td	P	mslp	ppp	t_water
+Wmin1	NA	-30	-35	NA	910	NA	2
+Wmin2	NA	-40	-45	NA	870	NA	0
+Wmax1	60	50	35	NA	1080	NA	32
+Wmax2	125	55	40	NA	1100	NA	35
+Smin1	NA	-20	-25	NA	900	NA	2
+Smin2	NA	-30	-35	NA	850	NA	0
+Smax1	90	50	35	NA	1080	NA	32
+Smax2	150	60	40	NA	1100	NA	35
+Ymin1	NA	NA	NA	400	NA	NA	NA
+Ymin2	NA	NA	NA	300	NA	NA	NA
+Ymax1	NA	NA	NA	1080	NA	40	NA
+Ymax2	NA	NA	NA	1100	NA	50	NA
+
+[down 45S - up 45N]
+Season	w	ta	td	P	mslp	ppp	t_water
+Wmin1	NA	-80	-85	NA	910	NA	-1.0
+Wmin2	NA	-90	-99	NA	940	NA	-2.1
+Wmax1	50	35	30	NA	1080	NA	27.0
+Wmax2	100	40	35	NA	1100	NA	30.0
+Smin1	NA	-30	-35	NA	950	NA	-1.0
+Smin2	NA	-40	-45	NA	920	NA	-2.1
+Smax1	40	40	35	NA	1080	NA	30
+Smax2	75	50	40	NA	1100	NA	35
+Ymin1	NA	NA	NA	400	NA	NA	NA
+Ymin2	NA	NA	NA	300	NA	NA	NA
+Ymax1	NA	NA	NA	1080	NA	40	NA
+Ymax2	NA	NA	NA	1100	NA	50	NA
+
+In season we have W - Winter, S - Summer and Y - Year.
+
+For TC
+dt	ta_tol	td_tol	ppp_tol	p_tol	mslp_tol
+1	4	4	3	NA	NA
+2	7	6	6	NA	NA
+3	9	8	9	0.5	1.5
+6	15	12	18	1.5	2.5
+12	25	20	36	NA	NA
+
+dt -> time since last observation and "tol" -> means total
+
+
+2.	Header Check
+
+If file to upload is acording with SEF format then this can be ignored, but if not then header can be check here to see if it's under definitions of header in files (this is important if not correct app will not run properly and motive for many  errors).
+
+
+3.	Units
+
+This place gives chance to check and convert, if it's case, the units of variable. Units convertion present:
+
+	Temperatures
+	Pressures
+	Sunshine
+	Clouds

@@ -1,0 +1,21 @@
+STATISTICS
+
+
+In this place is presented in form of table statistic values regarding variable tested only. This values can be from printed material or calculated by application.
+This includes
+
+Number of observations
+Sum
+Mean
+Maximum
+Minimum
+Median
+Standard deviation
+Variation
+Amplitude
+
+
+The mean or sum will be used to do test, mean or sum test if printed statistic does exist.
+
+
+This tables allow searching for year and month for printed and calculated and also permit saving in file those values for calculated.

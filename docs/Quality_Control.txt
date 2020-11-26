@@ -1,0 +1,13 @@
+QUALITY CONTROL
+
+
+This panel is divided in two blocks, Tests and Log.
+
+In first there is a list of possible tests regarding variable 
+in test, by click in square next to them to activate.
+When activated will run function inside app that does calculations and tests. 
+
+Example: Sunshine check will calculate maximum hours of sun for dterminated day and chack with value observed. All this will be show further in results.
+
+The second shows log file with what have been correctly done or wrong.
+This file "log.txt" can renew it by delete old one that should be see in directory where app files are.

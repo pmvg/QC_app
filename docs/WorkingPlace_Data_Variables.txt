@@ -1,0 +1,17 @@
+
+1.	Working Place tab
+
+This place shows from whitch directory the application is running. All input and mostly output files should be put in this place.
+To change it's only need to use copy/paste of all files to new directory.
+
+
+2.	Data tab
+
+In this tab is present a data table of values uploaded, and is one form of checking if data file upload work correctly, i.e. depending on options taked in upload regarding content format of file.
+Also will be a choise to download data file, but it will more usefull when quality control tests runs allowing update of meta column with new information. The file will have "qc" on his name.
+
+
+3.	Variables
+
+This tab shows a list of variables loaded by default or user own file, see upload section.  
+ 

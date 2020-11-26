@@ -1,0 +1,12 @@
+SEF	0.2.0
+ID	Rosario_Santa_Fe
+Name	Rosario de Santa Fe
+Lat	-32.945
+Lon	-60.333
+Alt	36
+Source	C3S_SouthAmerica
+Link	https://data-rescue.copernicus-climate.eu/lso/1086330
+Vbl	Tn
+Stat	minimum
+Units	C
+Meta

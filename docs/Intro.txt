@@ -1,0 +1,13 @@
+
+This small help menu will try to aswer to any doubt or explain how this app workout. 
+	
+In resume this app will take Data fields of meteorologic variables, prepare them and make quality control, that can include:
+    
+ 1) temporal test,
+ 2) limits test,
+ 3) interation with other variables test,
+ 4) mean test,
+ 5) graphic test and
+ 6) between possible others.
+
+Also this app can be used only to create and see statistics and graphics of data fields.

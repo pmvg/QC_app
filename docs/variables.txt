@@ -1,0 +1,39 @@
+numb	var	units	description
+01	w	m/s	Wind speed
+02	dd	degree	Wind direction
+03	u	m/s	Eastward wind speed
+04	v	m/s	Northward wind speed
+05	p	hPa	Air pressure 
+06	mslp	hPa	msl pressure
+07	atb	C	Adjunct temperature barometer
+08	ta	C	Air temperature
+09	Tx	C	Maximum air temperature
+10	Tn	C	Minimum air temperature
+11	TGs	C	Maximum grass temperature
+12	TGn	C	Minimum grass temperature
+13	Ts	C	Soil temperature
+14	t_water	K	Water temperature
+15	rh	%	Relative humidity
+16	e	hPa	Water vapour pressure
+17	ah	g/m3	Absolute humidity
+18	td	C	Dew point temperature
+19	tb	C	Wet bulb temperature
+20	n	Okta	Cloud cover
+21	ss	h	Sunshine hours
+22	rr	mm	Precipitation
+23	rrh	h	Precipitation hours
+24	eee	mm	evaporation
+25	act	degree	actinometry
+26	Txs	C	Maximum irradiation temperature
+27	Tns	C	Minimum irradiation temperature
+28	mws	m/s	Mean wind speed 
+29	esa		Electric State of Atmosphere
+30	ssp	%	Sunshine hours percentage
+31	vv	m	Visibility
+32	soil	coded	Soil status
+33	ww	coded	Present weather
+34	fs	cm	Fresh snow
+35	sc	%	Fraction of snow cover
+36	sd	cm	Snow depth
+
+

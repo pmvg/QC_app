@@ -1,0 +1,21 @@
+GRAPHICS
+
+
+In here we see some visual representations of data that is been tested.
+
+This includes:
+
+1)	Histogram
+
+ Will show distribution of values over class values.
+
+
+2)	Time plot
+
+ Will show the distribution of values over time.
+ It will have a choice of see more detailed time periods and a table values.
+
+
+3)	Deviation from mean
+
+ In this one will be calculated a diference between mean and the value. this may allow us to check on spikes or extreme values in data serie.

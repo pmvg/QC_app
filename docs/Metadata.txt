@@ -1,0 +1,27 @@
+METADATA
+
+
+In this menu it will shows all information necessary for station and variables data sets.
+
+It's possible to check
+
+ for station
+
+	Name
+	Localization (Latitude, Longitude, Altitude)
+
+ for variables
+	
+	Source
+	Variable short name
+	Statistic (minimum, maximum, mean, point, etc...)
+	Units
+	Meta (more metadata information)
+
+
+To know more about this check link bellow
+
+"https://datarescue.climate.copernicus.eu/node/80"
+
+
+Also in this menu it will be information about number of years and hours loaded from file and years and hours values.

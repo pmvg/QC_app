@@ -1,0 +1,6 @@
+dt	ta_tol	td_tol	ppp_tol	p_tol	mslp_tol
+1	4	4	3	NA	NA
+2	7	6	6	NA	NA
+3	9	8	9	0.5	1.5
+6	15	12	18	1.5	2.5
+12	25	20	36	NA	NA

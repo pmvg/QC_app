@@ -1,0 +1,33 @@
+
+UPLOAD
+
+This place is where data files are loaded to app in form of tables. 
+The default files to upload is SEF (Station Exchange Format) files, but can be use other format files. 
+Note that any of this files must have only one line header.   
+The SEF files have in theres first twelve lines metadata from station. More information about SEF format here https://datarescue.climate.copernicus.eu/st_formatting-land-stations
+
+
+1.	Data Set
+
+There is a maximum of four loading blocks spots but the first is main data that will be receive all tests.
+
+Three others spots is to store other variables data that needs to be used in some of tests. Exemple: Temperature, Max Temperature and Min Temperature.
+
+
+2.	Statistic
+
+In here there is only one upload block for main data that is been tested for mean.
+
+
+3.	Variable list
+
+This place if user have any variable list of is own can upload to app and use.
+Remember that this file is important to identify variables and units respectively and is recomended that format follows the default file that will active.
+
+
+4.	Metadata
+
+This tab like Data Set have more than one blocks of download depending of number of files choosed in Data Set tab.
+In here is possible to upload metadata for station in same format that exists in first lines of SEF file.
+For that propose there is in directory "docs" a pre file with name Meta_template.tsv, opened by any text editor and is recomended to use it if not SEF file.
+
