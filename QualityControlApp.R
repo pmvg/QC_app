@@ -20,6 +20,7 @@ source("./apps/statistic.R")
 source("./apps/sunshine.R") 
 source("./apps/check_header.R")
 source("./apps/mean_or_sum.R")
+source("./apps/compare_h.R")
 
 ui <- dashboardPage(
 dashboardHeader(title = "Quality Control"),
@@ -64,8 +65,8 @@ tabItems(
   solidHeader = TRUE,
   status = "warning",
   width = 5,
-  tags$b(tags$h4("Address below is where App is and will used for everything."),
-  tags$b(tags$h4("To choose another place just copy App to desired directory."))))),              
+  tags$b(tags$h4("Address below is where App is and will used for everything.")),
+  tags$b(tags$h4("To choose another place just copy App to desired directory.")))),              
   fluidRow(
   box(
    title = "Work place",
@@ -262,6 +263,15 @@ tabItems(
   fluidRow(
    tags$br(),
    navlistPanel(
+     tabPanel("Warnings",
+      fluidRow(
+       box(
+        title = "Warning",
+        solidHeader = TRUE,
+        status = "warning",
+        width = 5,
+        tags$b(tags$h4("Depending on size of dataset, processing information in certain tab panels will take some time.")),
+        ))),
      "Tests",
      tabPanel("GEL - Gross Errors Limits"),
      tabPanel("TC - Temporal Consistency"),
@@ -269,17 +279,24 @@ tabItems(
      tabPanel("MS - Mean or Sum",
               column(width = 7, DT :: dataTableOutput("getMS"))),
      tabPanel("Temperature"),
-     tabPanel("Sunshine", 
-              column(width = 7, DT :: dataTableOutput("getSun")),
-              column(width = 5, tags$br(), tags$br(), tags$br(), tags$br(),
+     tabPanel("Sunshine",
+              tabsetPanel(
+                tabPanel(title = "Daily",
+                         tags$br(),
+                         column(width = 7, DT :: dataTableOutput("getSun")),
+                         column(width = 5, tags$br(), tags$br(), tags$br(), tags$br(),
                                 infoBoxOutput("up", width = 8),
                                 infoBoxOutput("equal", width = 8),
                                 infoBoxOutput("down", width = 8))),
+                tabPanel(title = "Sub-daily",
+                         tags$br(),
+                         column(width = 7, DT :: dataTableOutput("getSun_sd")))
+     )),
      tags$br(),tags$br(),
      tabPanel("Meta",
               column(width = 7,
               DT :: dataTableOutput("Metatab"))),
-     widths = c(2,10))
+     widths = c(1,11))
   )),
 #
 # Statistic tab
@@ -474,7 +491,7 @@ tabItem(
         status = "primary", 
         width = 2,
 #        align = "center",
-        radioButtons("statsOnOff", label = NULL, choices = c("Available" = 1, "Not Available" = 2), selected = 2)
+        radioButtons("statsOnOff", label = NULL, choices = c("Available" = 1, "Not Available" = 2), selected = 2, inline = TRUE)
       ),
       box(
         title = "Stat Used", 
@@ -482,8 +499,15 @@ tabItem(
         status = "primary", 
         width = 2,
 #        align = "center",
-        radioButtons("statused", label = NULL, choices = c("Mean" = 1, "Sum" = 2), selected = 1)
-      )),
+        radioButtons("statused", label = NULL, choices = c("Mean" = 1, "Sum" = 2), selected = 1, inline = TRUE)
+      ),
+      box(
+        title = "Time Period", 
+        solidHeader = TRUE, 
+        status = "primary", 
+        width = 2,
+        radioButtons("timeperiod", label = NULL, choices = c("monthly", "daily", "sub-daily"), selected = "sub-daily", inline = TRUE)
+)),
     fluidRow(
       box(
        status = "primary", 
@@ -1648,13 +1672,28 @@ output$MS <- renderUI({
 #
 output$getSun <- DT:: renderDataTable({
   
-  if(length(fixData()) == 0) return()
-  if(length(get_sunlight()) == 0) return()
-  data_sun <- cbind(fixData()["Year"], fixData()["Month"], fixData()["Day"], fixData()["Value"],get_sunlight())
+  data_sun <- get_sunlight()
+  
   if(length(data_sun) == 0) return()
 
   DT:: datatable(
     data_sun, 
+    options = list(searching = FALSE),
+    rownames = FALSE)
+  
+})
+
+output$getSun_sd <- DT:: renderDataTable({
+
+  data_sun_sd <- get_sun_1h()  
+  time_T <- input$timeperiod
+  
+  if(length(data_sun_sd) == 0) return()
+  if(length(time_T) == 0) time_T <- "sub-daily" 
+  if(time_T != "sub-daily") return()
+
+  DT:: datatable(
+    data_sun_sd, 
     options = list(searching = FALSE),
     rownames = FALSE)
   
@@ -1677,11 +1716,11 @@ output$getMS <- DT :: renderDataTable({
 ## Info Box
 output$up <- renderInfoBox({
   numX1 <- counter_sunshine()
-  infoBox(paste(numX1[4],"%", sep = " "), numX1[1], subtitle = "Greater than max", icon = icon("greater-than"))
+  infoBox(paste(numX1[5],"%", sep = " "), numX1[2], subtitle = "Greater than max", icon = icon("greater-than"))
 })
 output$down <- renderInfoBox({
   numX1 <- counter_sunshine()
-  infoBox(paste(numX1[5],"%", sep = " "), numX1[2], subtitle = "Lesser than max", icon = icon("less-than"))
+  infoBox(paste(numX1[4],"%", sep = " "), numX1[1], subtitle = "Lesser than max", icon = icon("less-than"))
 })
 output$equal <- renderInfoBox({
   numX1 <- counter_sunshine()
@@ -1715,14 +1754,32 @@ get_stat <- reactive({
 })
 ## sunlight calculations
 get_sunlight <- reactive({
-  if(input$check6) day.duration(fixData(),metData())
+if(input$check6){
+  time_in <- input$timeperiod
+  if(time_in == "sub-daily"){
+   insider <- stats.go(fixData(),type="sum",period="daily") 
+  } else {
+   insider <- fixData()
+  }
+#  assign("insider",insider, envir = globalenv())
+  day.duration(insider,metData())    
+} 
 })
+## sunlight 1h compares
+get_sun_1h <- reactive({
+  if(input$check6){
+  time_in <- input$timeperiod
+  if(time_in == "sub-daily") hour.compare(fixData(),1,"less") else return()
+  }
+})
+
 ## Counters
 counter_sunshine <- reactive({
   counter.if(get_sunlight()$Dif, 0)
 })
 ## Deviation calculations
 devMean <- reactive({
+  time_tt <- input$timeperiod
   Avalue <- c() 
   devData <- fixData()
   statData <- get_stat()
@@ -1730,15 +1787,58 @@ devMean <- reactive({
   if(length(statData) == 0) return()
   maxDLen <- length(devData$Year)
   for(jm in 1:maxDLen){
-    dataY <- devData$Year[jm]
-    dataM <- devData$Month[jm]
-    Avalue[jm] <- statData$Mean[statData$Year == dataY & statData$Month == dataM] - devData$Value[jm]
+   dataY <- devData$Year[jm]
+   dataM <- devData$Month[jm]
+   dataH <- devData$Hour[jm]
+   if(time_tt == "sub-daily") {
+   Avalue[jm] <- statData$mean[statData$Year == dataY & statData$Month == dataM & statData$Hour == dataH] - devData$Value[jm] 
+   } else {
+   Avalue[jm] <- statData$mean[statData$Year == dataY & statData$Month == dataM] - devData$Value[jm]      
+   }
   }
   return(Avalue)
 })
 
+##
+# Meta calculations if sub-daily
+meta_cal <- reactive({
+
+if(input$check6){
+ if(input$timeperiod == "sub-daily"){
+   ke <- 0
+   for(ye in 1:lenNumbY()){
+     Meta_S <- c()
+     nye <- numY()[ye]
+     
+     datafix <- fixData()[fixData()$Year == nye,]
+     sunDatafix <- get_sunlight()[get_sunlight()$Year == nye,]
+     
+     maxle <- length(datafix$Year)
+     maxle1 <- length(sunDatafix$Year)
+     
+     for(il in 1:maxle){
+       for(im in 1:maxle1){
+         if(datafix$Month[il] == sunDatafix$Month[im] & datafix$Day[il] == sunDatafix$Day[im]){
+           Meta_S[il] <- sunDatafix$FlagSun[im]
+         } 
+       }
+     } 
+     meta_tab <- data.frame(datafix,Meta_S)
+     if(ke == 0){
+       Meta_Sun_max <- meta_tab 
+       ke <- 1
+     } else {
+       Meta_Sun_max <- rbind(Meta_Sun_max,meta_tab)
+     }
+   }
+ }
+}
+#  assign("meta_m",Meta_Sun_max,envir = globalenv())
+return(Meta_Sun_max)
+})
 
 ## Meta replaces
+
 checkMeta <- reactive({
   
 Meta <- c()
@@ -1746,6 +1846,8 @@ Meta_Conv <- c()
 #Meta_Gross <- C()
 #Meta_TC <- c()
 #Meta_IC <- c()
+Meta_Sun_1h <- c()
+Meta_Sun_max <- c()
 Meta_Sun <- c()
 Meta_MS <- c()
 #Meta_T <- c()
@@ -1760,8 +1862,9 @@ if(length(co_in) == 0) co_in <- FALSE
 if(length(ms_in) == 0) ms_in <- FALSE
 if(length(sun_in) == 0) sun_in <- FALSE
 
-MetaI <- fixData()$Meta 
-Meta <- data.frame(YYMMDD,MetaI)
+datafix <- fixData()
+MetaI <- fixData()$Meta
+if("Hour" %in% colnames(datafix)) Meta <- data.frame(YYMMDD,datafix["Hour"],MetaI) else Meta <- data.frame(YYMMDD,MetaI)
 maxMLen <- length(fixData()$Year)
 if(co_in == TRUE) {
  unitsConv <- metData()$val[metData()$opts == "Units"]
@@ -1781,7 +1884,6 @@ if(co_in == TRUE) {
 if(ms_in == TRUE) {
 if(input$statsOnOff == 1) {
 MSdata <- MS_check()
-datafix <- fixData()
 maxMSLen <- length(MSdata$Year)
  for(im in 1:maxMLen) {
   for(iq in 1:maxMSLen){
@@ -1805,16 +1907,34 @@ Meta <- cbind(Meta,Meta_MS)
 }}
 
 #if(input$check5) {}
+
 if(sun_in == TRUE) {
- Suns <- get_sunlight()$Dif
+
+Meta_Sun <- get_sunlight()$FlagSun
+Meta_Sun_1h <- get_sun_1h()$flagL
+sunData <- meta_cal()$Meta_S
+
+if(input$timeperiod == "sub-daily"){
  for(il in 1:maxMLen){
-  if(Suns[il] < 0.0) Meta_Sun[il] <- "Fail" else Meta_Sun[il] <-"Pass"
   if(length(Meta$MetaI[il]) == 0 | is.na(Meta$MetaI[il])){
-    if(Meta_Sun[il] == "Fail") Meta$MetaI[il] <- "qc=max_sun"
+   if(Meta_Sun_1h[il] == "Fail") Meta$MetaI[il] <- "qc=max_1h_sun"
+   if(sunData[il] == "Fail") Meta$MetaI[il] <- "qc=max_sun"
   } else {
-    if(Meta_Sun[il] == "Fail") Meta$MetaI[il] <- paste(Meta$MetaI[il],"qc=max_sun", sep = "|")}
+   if(Meta_Sun_1h[il] == "Fail") Meta$MetaI[il] <- paste(Meta$MetaI[il],"qc=max_1h_sun", sep = "|")
+   if(sunData[il] == "Fail") Meta$MetaI[il] <- paste(Meta$MetaI[il],"qc=max_sun", sep = "|")
+   }
  }
-Meta <- cbind(Meta,Meta_Sun)
+ Meta <- cbind(Meta,Meta_Sun_1h)
+} else {
+ for(il in 1:maxMLen){
+  if(length(Meta$MetaI[il]) == 0 | is.na(Meta$MetaI[il])){
+   if(Meta_Sun[il] == "Fail") Meta$MetaI[il] <- "qc=max_sun"
+  } else {
+   if(Meta_Sun[il] == "Fail") Meta$MetaI[il] <- paste(Meta$MetaI[il],"qc=max_sun", sep = "|")}
+ }
+ Meta <- cbind(Meta,Meta_Sun)
+}
+
 }
 return(Meta)
 })
@@ -1859,8 +1979,9 @@ output$plottabels <- DT:: renderDataTable({
   if(g6 != "All") data_plot <- data_plot[data_plot$Month == input$gmonths,]
   if(g7 != "All") data_plot <- data_plot[data_plot$Hour == input$ghours,]
   if(g8[1] != Sys.Date() & g8[2] != Sys.Date()) {
-    data_plot <- data_plot[data_plot$iDate >= input$dateRange[1] & data_plot$iDate <= input$dateRange[2],]}  
+    data_plot <- data_plot[data_plot$iDate >= input$dateRange[1] & data_plot$iDate <= input$dateRange[2],]} 
   data_plot <- data_plot[-1]
+  data_plot <- data_plot[1:length(colnames(data_plot))-1]
   DT:: datatable(
     data_plot, 
     options = list(searching = FALSE),
@@ -1886,7 +2007,8 @@ output$plottabels1 <- DT:: renderDataTable({
   if(a7 != "All") data_plot1 <- data_plot1[data_plot1$Hour == input$dmhours,]
   if(a8[1] != Sys.Date() & a8[2] != Sys.Date()) {
     data_plot1 <- data_plot1[data_plot1$ADate >= input$dateRange1[1] & data_plot1$ADate <= input$dateRange1[2],]}
-  data_plot1 <- data_plot1[-1] 
+  data_plot1 <- data_plot1[-1]
+  data_plot1 <- data_plot1[1:length(colnames(data_plot1))-1]
   DT:: datatable(
     data_plot1, 
     options = list(searching = FALSE),
