@@ -7,12 +7,17 @@ In this place can be define or change aspects that influenciate application and 
 
 Statistics 
 
-Default is Not Available.
 If a file exists and will be upload to application turn this this option "Available" auto activates mean or sum test (MS) in Quality Control tab.
+Default is Not Available.
 
 Stat Used
 
 This indicates witch stats (mean or sum) used to compare. Default is Mean.
+
+Time Period
+
+Indicates the type of time period with observations values. Data can have 1 value per month (monthly), 1 value per day (daily) or
+1 value per hour (sub-daily). Default value is sub-daily.
 
 1.1.	Thresholds
 
