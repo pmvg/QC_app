@@ -8,19 +8,27 @@
 #'  
 #' @Usage  
 #'  
-#' 
+#' T.check(data1,period="daily")
 #'  
 #' @Arguments
 #' 
+#' objdata...   data.frames or matrix with data values
+#' 
+#' objmeta...   information about variable(s) of objdata(s).
+#' 
+#' period       time interval between observation. Can be "sub-daily" if observations between hours,
+#'              "daily" if observations between days or "monthly" if one per month. Default is "sub-daily".
 #'
 #' @Details
 #'
-#' 
+#' From objdata to objdata3 
 #' 
 #' @Author: Pedro Gomes
 #'
 
-T.check <- function(){
+T.check <- function(objdata,objdata1=NA,objdata2=NA,objdata3=NA,
+                    objmeta,objmeta1=NA,objmeta2=NA,objmeta3=NA,
+                    period="sub-daily"){
   
 # writes date of run in log file
 cat("T Check run on:", format(Sys.time(), "%a %d %b %Y %H:%M:%S"), '\n', file = "log.txt", sep = " ", append = TRUE)

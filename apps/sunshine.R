@@ -9,12 +9,13 @@
 #'  
 #' @Usage 
 #'  
-#' day.duration(objData, objLocal) 
+#' day.duration(objData, objLocal,"sub-daily") 
 #'  
 #' @Arguments  
 #'  
 #' objData    data frame with Year, Month and Day values.
 #' objLocal   data frame with lat, long and alt values.
+#' period     time period of observations. Can be monthly, daily or sub-daily. Default is sub-daily.
 #'
 #' @Details
 #'
@@ -35,6 +36,8 @@ iday <- c()
 max_solar_day <- c()
 Dif <- c()
 solar_day <- data.frame()
+FlagSun <- c()
+
 if(length(objData) == 0) {
   cat("Data values not found, can't calculate max sunshine", file = "log.txt", fill = TRUE, append = TRUE)
   return()
@@ -111,14 +114,20 @@ max_solar_day[jj] <- as.numeric(format((w/15)*2, digits = 3))
 if(max_solar_day[jj] > 24.0) max_solar_day[jj] <- 24.0  
 if(max_solar_day[jj] < 0.0) max_solar_day[jj] <- 0.0 
 
-# Diference btw max_solar_day and value
-Dif[jj] <- max_solar_day[jj] - objData$Value[jj]
 }
-Dif <- as.numeric(format(Dif, digits = 3))
-#assign("max_solar_day",max_solar_day,envir = globalenv())
 
-solar_day <- data.frame(max_solar_day,Dif)
+# Diference btw max_solar_day and value
+if("Value" %in% colnames(objData)) sun_value <- objData$Value
+if("sum" %in% colnames(objData)) sun_value <- objData$sum
+for(jj in 1:kleng){
+if(length(sun_value[jj]) > 0) Dif[jj] <- max_solar_day[jj] - sun_value[jj]
+Dif[jj] <- as.numeric(format(Dif[jj], digits = 3))
+if(Dif[jj] < 0.0) FlagSun[jj] <- "Fail" else FlagSun[jj] <-"Pass"
+}
+solar_day <- data.frame(objData["Year"],objData["Month"],objData["Day"],max_solar_day,sun_value,Dif,FlagSun)
 
+
+#assign("solar_day",solar_day,envir = globalenv())
 
 return(solar_day)
 

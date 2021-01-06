@@ -20,7 +20,9 @@
 #' period        character value, say time period to calculate stats, "month" or "daily" if data
 #'               its sub-daily (have several hours). Default = "month".
 #'
-#' printStats    logical, to print stats to a file. Default = FALSE.               
+#' printStats    logical, to print stats to a file. Default = FALSE. 
+#' 
+#' warningMSG    logical, for warnings printed on screen and file. Default = FALSE.             
 #'
 #' @Details
 #'
@@ -33,7 +35,7 @@
 #' List of stats that calculates:
 #' 
 #' sum
-#' nobs              
+#' obs       (number of observations)             
 #' mean            
 #' max       (maximum)   
 #' min       (minimum)
@@ -45,7 +47,7 @@
 #' 
 #' This function uses the name 'Data' for dataset table and MUST HAVE HEADER with at least
 #' four columns with names [Year][Month][Day][Value]. Optional can have [Hour][Minute] if sub-daily
-#' dataset, but this function doesnt distinguish between daily hours.
+#' dataset, but this function doesn't distinguish between daily hours.
 #'
 #' In case of sub-daily datasets, make sure "Data" contain only one hour information each time for
 #' month stats. Example: Data_s <- Data    (to save all info)
@@ -64,7 +66,7 @@
 #' @Author: Pedro Gomes
 #'
 
-stats.go <- function(obj,type="full",period="month",printStats=FALSE) {
+stats.go <- function(obj,type="full",period="month",printStats=FALSE,warningMSG=FALSE) {
 
 # writes date of run in log file
 cat("Stats run on:", format(Sys.time(), "%a %d %b %Y %H:%M:%S"), '\n', file = "log.txt", sep = " ", append = TRUE)
@@ -76,10 +78,12 @@ if(length(obj) <= 1 ){
   Data <- obj
 }
 
-numYears <- unique(Data$Year)
-cat("Number of Years:", length(numYears),"->",numYears, sep = " ", fill = TRUE)
-cat("Number of Years:", length(numYears),"->",numYears, file = "log.txt", sep = " ", fill = TRUE, append = TRUE)
+if("Hour" %in% colnames(Data)) timeH <- Data$Hour[1] else timeH <- NA
 
+numYears <- unique(Data$Year)
+cat("Hour:",timeH,"-> Number of Years:", length(numYears),"->",numYears, sep = " ", fill = TRUE)
+cat("Hour:",timeH,"-> Number of Years:", length(numYears),"->",numYears, file = "log.txt", sep = " ", fill = TRUE, append = TRUE)
+ 
 s_year   <- c()
 s_month  <- c()
 s_day    <- c()
@@ -92,6 +96,7 @@ s_median <- c()
 s_sd     <- c()
 s_var    <- c()
 s_amp    <- c()
+Data_c <- data.frame()
 if("Hour" %in% colnames(Data)) {
   s_hour <- Data$Hour[1]
 } else {
@@ -113,12 +118,9 @@ for(ii in 1:length(numYears)) {
       } else {
         nb[2] <- 28
       }
-      for(ll in 1:nb[ii]) {
+      for(ll in 1:nb[jj]) {
         Data_sub <- Data[Data$Year == numYears[ii] & Data$Month == jj & Data$Day == ll, ]
-        if(length(Data_sub$Value) == 0) {
-          cat(numYears[ii],".",jj,".",ll," dont exist...",sep = "", fill = TRUE)
-          cat(numYears[ii],".",jj,".",ll," dont exist...",file = "log.txt",sep = "", fill = TRUE, append = TRUE)
-        } else {
+        if(length(Data_sub$Value) != 0) {
           # Number Observations
           s_obs[k] <- length(Data_sub$Value)
           # Sum
@@ -141,13 +143,18 @@ for(ii in 1:length(numYears)) {
           s_month[k] <- jj
           s_day[k] <- ll
           k <- k+1
+         } else {
+          if(warningMSG){
+            cat(numYears[ii],".",jj,".",ll," dont exist...",sep = "", fill = TRUE)
+            cat(numYears[ii],".",jj,".",ll," dont exist...",file = "log.txt",sep = "", fill = TRUE, append = TRUE)}
         }
       }
     } else {
       Data_sub <- Data[Data$Year == numYears[ii] & Data$Month == jj, ]
       if(length(Data_sub$Value) == 0) {
+        if(warningMSG){
         cat(numYears[ii],".",jj," dont exist...",sep ="",fill = TRUE)
-        cat(numYears[ii],".",jj," dont exist...",file = "log.txt",sep = "", fill = TRUE, append = TRUE)
+        cat(numYears[ii],".",jj," dont exist...",file = "log.txt",sep = "", fill = TRUE, append = TRUE)}
       } else {
         # Number Observations
         s_obs[k] <- length(Data_sub$Value)
@@ -176,10 +183,10 @@ for(ii in 1:length(numYears)) {
 }
 if(type == "full") {
   if(period == "daily"){
-    stat_name <- c("Year","Month","Day","Obs","Sum","Mean","Max","Min","Median","Sd","Var","Amp")
+    stat_name <- c("Year","Month","Day","obs","sum","mean","max","min","median","sd","var","amp")
     Data_c <- data.frame(s_year,s_month,s_day,s_obs,s_sum,s_mean,s_max,s_min,s_median,s_sd,s_var,s_amp, stringsAsFactors=FALSE)  
   } else {
-    stat_name <- c("Year","Month","Hour","Minute","Obs","Sum","Mean","Max","Min","Median","Sd","Var","Amp")  
+    stat_name <- c("Year","Month","Hour","Minute","obs","sum","mean","max","min","median","sd","var","amp")  
     Data_c <- data.frame(s_year,s_month,s_hour,s_minu,s_obs,s_sum,s_mean,s_max,s_min,s_median,s_sd,s_var,s_amp, stringsAsFactors=FALSE)  
     
   }
